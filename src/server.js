@@ -1,35 +1,34 @@
 import http from 'node:http'
+import { json } from './middlewares/json.js'
+import { Database } from './database.js'
 
-const tasks = []
+const database = new Database
 
 const server = http.createServer(async (req, res) => {
   const { method, url } = req
 
-  const buffer = []
-
-  for await (const chunk of req) {
-    buffer.push(chunk)
-  }
-
-  try {
-    req.body = JSON.parse(Buffer.concat(buffer).toString())
-  } catch {
-    req.body = null
-  }
+  await json(req, res)
 
   if (method === 'POST' && url === '/task') {
-    const { task, owner } = req.body
+    const { task_name, description, completed_at, created_at, updated_at } = req.body
 
-    tasks.push({
+    const tasks = {
       id: 1,
-      task,
-      owner,
-    })
+      task_name,
+      description,
+      completed_at: null,
+      created_at,
+      updated_at
+    }
+
+    database.insert('task', tasks)
 
     return res.writeHead(201).end()
   }
 
   if (method === 'GET' && url === '/task') {
+    const tasks = database.select('task')
+
     return res
       .setHeader('Content-type', 'application/json')
       .end(JSON.stringify(tasks))
