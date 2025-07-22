@@ -40,6 +40,6 @@ const server = http.createServer(async (req, res) => {
   return res.writeHead(404).end()
 })
 
-// aula 4 - video 2
+// aula 4 - video 3
 
 server.listen(3333)
