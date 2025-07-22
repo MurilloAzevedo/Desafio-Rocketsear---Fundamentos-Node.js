@@ -12,13 +12,16 @@ const server = http.createServer(async (req, res) => {
   if (method === 'POST' && url === '/task') {
     const { task_name, description, completed_at, created_at, updated_at } = req.body
 
+    const timeElapsed = Date.now()
+    const today = new Date(timeElapsed)
+
     const tasks = {
       id: 1,
       task_name,
       description,
       completed_at: null,
-      created_at,
-      updated_at
+      created_at: today.toLocaleDateString(),
+      updated_at: today.toLocaleDateString()
     }
 
     database.insert('task', tasks)
@@ -37,6 +40,6 @@ const server = http.createServer(async (req, res) => {
   return res.writeHead(404).end()
 })
 
-// aula 3 - video 7
+// aula 4 - video 2
 
 server.listen(3333)
