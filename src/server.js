@@ -1,46 +1,23 @@
 import http from 'node:http'
-import { randomUUID } from 'node:crypto'
 import { json } from './middlewares/json.js'
-import { Database } from './database.js'
-
-const database = new Database
+import { routes } from './routes.js'
 
 const server = http.createServer(async (req, res) => {
   const { method, url } = req
 
   await json(req, res)
 
-  if (method === 'POST' && url === '/task') {
-    const { task_name, description, completed_at, created_at, updated_at } = req.body
+  const route = routes.find(route => {
+    return route.method === method && route.path === url
+  })
 
-    const timeElapsed = Date.now()
-    const today = new Date(timeElapsed)
-
-    const tasks = {
-      id: randomUUID(),
-      task_name,
-      description,
-      completed_at: null,
-      created_at: today.toLocaleDateString(),
-      updated_at: today.toLocaleDateString()
-    }
-
-    database.insert('task', tasks)
-
-    return res.writeHead(201).end()
-  }
-
-  if (method === 'GET' && url === '/task') {
-    const tasks = database.select('task')
-
-    return res
-      .setHeader('Content-type', 'application/json')
-      .end(JSON.stringify(tasks))
+  if (route) {
+    return route.handler(req, res)
   }
 
   return res.writeHead(404).end()
 })
 
-// aula 4 - video 3
+// aula 5 - video 2
 
 server.listen(3333)
