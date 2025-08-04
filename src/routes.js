@@ -9,11 +9,9 @@ export const routes = [
     method: 'GET',
     path: buildRoutePath('/task'),
     handler: (req, res) => {
-      const tasks = database.select('/task')
+      const tasks = database.select('task')
 
-      return res
-        .setHeader('Content-type', 'application/json')
-        .end(JSON.stringify(tasks))
+      return res.end(JSON.stringify(tasks))
     }
   },
   {
@@ -43,7 +41,7 @@ export const routes = [
     method: 'DELETE',
     path: buildRoutePath('/task/:id'),
     handler: (req, res) => {
-
+      return res.end()
     }
   }
 ]
