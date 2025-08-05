@@ -47,5 +47,28 @@ export const routes = [
 
       return res.writeHead(204).end()
     }
+  },
+  {
+    method: 'PUT',
+    path: buildRoutePath('/task/:id'),
+    handler: (req, res) => {
+
+      const timeElapsed = Date.now()
+      const today = new Date(timeElapsed)
+
+      const { id } = req.params
+
+      const {
+        description,
+        updated_at
+      } = req.body
+
+      database.update('task', id, {
+        description,
+        updated_at: today.toLocaleDateString(),
+      })
+
+      return res.writeHead(204).end()
+    }
   }
 ]
