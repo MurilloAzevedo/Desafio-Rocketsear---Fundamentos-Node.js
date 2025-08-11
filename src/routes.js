@@ -9,9 +9,12 @@ export const routes = [
     method: 'GET',
     path: buildRoutePath('/task'),
     handler: (req, res) => {
-      console.log(req.query)
+      const { search } = req.query
 
-      const tasks = database.select('task')
+      const tasks = database.select('task', {
+        task_name: search,
+        owner: search,
+      })
 
       return res.end(JSON.stringify(tasks))
     }
@@ -20,7 +23,7 @@ export const routes = [
     method: 'POST',
     path: buildRoutePath('/task'),
     handler: (req, res) => {
-      const { task_name, description, completed_at, created_at, updated_at } = req.body
+      const { task_name, owner, description, completed_at, created_at, updated_at } = req.body
 
       const timeElapsed = Date.now()
       const today = new Date(timeElapsed)
@@ -28,6 +31,7 @@ export const routes = [
       const tasks = {
         id: randomUUID(),
         task_name,
+        owner,
         description,
         completed_at: null,
         created_at: today.toLocaleDateString(),
