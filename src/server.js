@@ -26,6 +26,4 @@ const server = http.createServer(async (req, res) => {
   return res.writeHead(404).end()
 })
 
-// aula 5 - video 7
-
 server.listen(3333)
